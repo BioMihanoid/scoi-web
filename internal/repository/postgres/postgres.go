@@ -1,13 +1,16 @@
 package postgres
 
-import "database/sql"
+import (
+	"github.com/jmoiron/sqlx"
+	_ "github.com/lib/pq"
+)
 
 const (
 	usersTable = "users"
 )
 
-func NewPostgresDb(dsn string) (*sql.DB, error) {
-	db, err := sql.Open("postgres", dsn)
+func NewPostgresDb(dsn string) (*sqlx.DB, error) {
+	db, err := sqlx.Open("postgres", dsn)
 	if err != nil {
 		return nil, err
 	}
