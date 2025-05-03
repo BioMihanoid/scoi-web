@@ -17,8 +17,8 @@ func main() {
 	}
 
 	repos := repository.NewRepository(db)
-	services := service.NewService(repos)
-	handler := api.NewHandler(services)
+	services := service.NewService(repos, cfg.Auth.JWTSecret)
+	handler := api.NewHandler(services, cfg.Auth.JWTSecret)
 
 	r := handler.InitRoutes()
 	err = r.Run(cfg.Server.Port)

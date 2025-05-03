@@ -5,17 +5,17 @@ import (
 	"scoi-web/internal/repository/postgres"
 )
 
-type UserRepositoryInterface interface {
-	CreateUser()
-	UpdateUser()
+type AuthRepositoryInterface interface {
+	CreateUser(email string, password string) (int, error)
+	GetUser(email string, password string) (int, error)
 }
 
 type Repository struct {
-	UserRepositoryInterface
+	AuthRepositoryInterface
 }
 
 func NewRepository(db *sqlx.DB) *Repository {
 	return &Repository{
-		UserRepositoryInterface: postgres.NewUserRepository(db),
+		AuthRepositoryInterface: postgres.NewAuthRepository(db),
 	}
 }

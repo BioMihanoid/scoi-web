@@ -6,11 +6,13 @@ import (
 )
 
 type Handler struct {
+	jwtKey   string
 	services service.Service
 }
 
-func NewHandler(services *service.Service) *Handler {
+func NewHandler(services *service.Service, jwtKey string) *Handler {
 	return &Handler{
+		jwtKey:   jwtKey,
 		services: *services,
 	}
 }
@@ -25,13 +27,13 @@ func (h *Handler) InitRoutes() *gin.Engine {
 	authHandler := NewAuthHandler(h.services)
 	auth := router.Group("/auth")
 	{
-		auth.POST("/sign-in", authHandler.SignIN)
-		auth.POST("/sign-up", authHandler.SignUP)
-		auth.POST("/refresh-token", authHandler.RefreshToken)
+		auth.POST("/sign-in", authHandler.SignIn)
+		auth.POST("/sign-up", authHandler.SignUp)
+		auth.POST("/refresh-token", h.RefreshToken)
 	}
 
 	userHandler := NewUserHandler(h.services)
-	users := router.Group("/users")
+	users := router.Group("/users", h.getAccessWithToken)
 	{
 		users.POST("/process", userHandler.Process)
 		users.GET("/images", userHandler.Images)
